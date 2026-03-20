@@ -3,3 +3,4 @@ requests
 pytest
 pytest-cov
 requests-mock
+pyinstaller
