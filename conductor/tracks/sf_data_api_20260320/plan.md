@@ -20,9 +20,9 @@
 - [x] Task: Implement SoQL `WHERE` Clause - Date Filters [8e39d64]
     - [x] Test `build_where_clause` correctly formats dates with `floating_timestamp` cast [8e39d64]
     - [x] Implement logic for `--date-start` and `--date-end` [8e39d64]
-- [ ] Task: Implement SoQL `WHERE` Clause - District Filter
-    - [ ] Test `build_where_clause` correctly formats district (e.g., `caseless_one_of(assessor_neighborhood_district, "9")`)
-    - [ ] Implement logic for `--district`
+- [x] Task: Implement SoQL `WHERE` Clause - District Filter [d1a03b3]
+    - [x] Test `build_where_clause` correctly formats district (e.g., `caseless_one_of(assessor_neighborhood_district, "9")`) [d1a03b3]
+    - [x] Implement logic for `--district` [d1a03b3]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: SoQL Query Builder Logic' (Protocol in workflow.md)
 
 ## Phase 3: CLI Integration
