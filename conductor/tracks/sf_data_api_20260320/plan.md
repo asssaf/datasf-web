@@ -11,9 +11,9 @@
     - [x] Create `tests/test_query_builder.py` [e07084c]
     - [x] Test `build_select_clause` returns the full list of required fields (e.g., `closed_roll_year`, `property_location`, etc.) [e07084c]
     - [x] Implement `build_select_clause` function [e07084c]
-- [ ] Task: Implement SoQL `WHERE` Clause - Numeric Filters
-    - [ ] Test `build_where_clause` correctly formats bedrooms/bathrooms (e.g., `number_of_bedrooms IN ("2.0")`)
-    - [ ] Implement logic for `--bedrooms` and `--bathrooms`
+- [x] Task: Implement SoQL `WHERE` Clause - Numeric Filters [f6044ff]
+    - [x] Test `build_where_clause` correctly formats bedrooms/bathrooms (e.g., `number_of_bedrooms IN ("2.0")`) [f6044ff]
+    - [x] Implement logic for `--bedrooms` and `--bathrooms` [f6044ff]
 - [ ] Task: Implement SoQL `WHERE` Clause - Range Filters
     - [ ] Test `build_where_clause` correctly formats area ranges (e.g., `property_area BETWEEN 500 AND 1000`)
     - [ ] Implement logic for `--area-min` and `--area-max`
