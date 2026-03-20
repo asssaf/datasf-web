@@ -32,11 +32,11 @@
 - [x] Task: Connect CLI to Query Builder [d2b392f]
     - [x] Test that the CLI correctly invokes the query builder and passes the result to the API client [d2b392f]
     - [x] Implement the glue logic in `main.py` [d2b392f]
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: CLI Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: CLI Integration' (Protocol in workflow.md) [ec728b4]
 
 ## Phase 4: Output & Final Polish
-- [ ] Task: Verify and Polish Output Formatting
-    - [ ] Verify JSON output structure with the new data schema
-    - [ ] Verify Table output formatting (ensure columns align and headers are readable)
-    - [ ] Update `formatter.py` if necessary to handle the SF Data schema elegantly
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Output & Final Polish' (Protocol in workflow.md)
+- [x] Task: Verify and Polish Output Formatting [ec728b4]
+    - [x] Verify JSON output structure with the new data schema [ec728b4]
+    - [x] Verify Table output formatting (ensure columns align and headers are readable) [ec728b4]
+    - [x] Update `formatter.py` if necessary to handle the SF Data schema elegantly [ec728b4]
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Output & Final Polish' (Protocol in workflow.md) [ec728b4]
