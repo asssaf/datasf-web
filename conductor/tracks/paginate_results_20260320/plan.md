@@ -8,11 +8,11 @@
     - [x] Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: API Client Update
-- [ ] Task: Integrate pagination parameters into `api_client.py`
-    - [ ] Write failing test in `tests/test_api_client.py` to verify parameters are sent.
-    - [ ] Modify `api_client.py` to pass limit and offset as parameters to the REST call.
-    - [ ] Verify test passes.
-    - [ ] Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task: Integrate pagination parameters into `api_client.py` [91ca728]
+    - [x] Write failing test in `tests/test_api_client.py` to verify parameters are sent.
+    - [x] Modify `api_client.py` to pass limit and offset as parameters to the REST call.
+    - [x] Verify test passes.
+    - [x] Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Final Verification
 - [ ] Task: Final Check
