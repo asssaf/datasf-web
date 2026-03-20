@@ -1,9 +1,9 @@
 # Implementation Plan - SF Data API Integration
 
 ## Phase 1: API Client Configuration
-- [ ] Task: Update API Client Default Configuration
-    - [ ] Create test verifying the default Base URL is `https://data.sfgov.org` and endpoint is `/resource/wv5m-vpq2.json`
-    - [ ] Update `api_client.py` to use the new defaults
+- [x] Task: Update API Client Default Configuration [1f09543]
+    - [x] Create test verifying the default Base URL is `https://data.sfgov.org` and endpoint is `/resource/wv5m-vpq2.json` [1f09543]
+    - [x] Update `api_client.py` to use the new defaults [1f09543]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: API Client Configuration' (Protocol in workflow.md)
 
 ## Phase 2: SoQL Query Builder Logic
