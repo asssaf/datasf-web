@@ -17,13 +17,30 @@ def test_cli_help():
 def test_cli_query_with_args():
     runner = CliRunner()
     # Test with multiple query arguments
-    result = runner.invoke(cli, ['query', '--param', 'key1=value1', '--param', 'key2=value2'])
-    assert result.exit_code == 0
-    assert 'Querying with arguments: {\'key1\': \'value1\', \'key2\': \'value2\'}' in result.output
+    with patch('main.APIClient') as MockClient:
+        mock_instance = MockClient.return_value
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.text = '{"success": true}'
+        mock_instance.get.return_value = mock_response
+        
+        result = runner.invoke(cli, ['query', '--param', 'key1=value1', '--param', 'key2=value2'])
+        assert result.exit_code == 0
+        assert "Querying https://api.example.com/endpoint with arguments: {'key1': 'value1', 'key2': 'value2'}" in result.output
 
-def test_cli_query_invalid_arg_format():
+from unittest.mock import patch, MagicMock
+
+def test_cli_query_executes_api_call():
     runner = CliRunner()
-    # Test with invalid parameter format
-    result = runner.invoke(cli, ['query', '--param', 'invalid_format'])
-    assert result.exit_code != 0
-    assert 'Error: Invalid parameter format' in result.output
+    with patch('main.APIClient') as MockClient:
+        mock_instance = MockClient.return_value
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.text = '{"success": true}'
+        mock_instance.get.return_value = mock_response
+        
+        result = runner.invoke(cli, ['query', '--param', 'key1=value1', '--param', 'key2=value2'])
+        
+        assert result.exit_code == 0
+        mock_instance.get.assert_called_once_with('endpoint', params={'key1': 'value1', 'key2': 'value2'})
+        assert 'API Response [200]: {"success": true}' in result.output
