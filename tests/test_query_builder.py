@@ -40,3 +40,18 @@ def test_build_where_clause_both_numeric():
     assert 'number_of_bedrooms IN ("3.0")' in where
     assert 'number_of_bathrooms IN ("2.0")' in where
     assert ' AND ' in where
+
+def test_build_where_clause_area_min():
+    params = {'area_min': '500'}
+    where = build_where_clause(params)
+    assert 'property_area >= 500' in where
+
+def test_build_where_clause_area_max():
+    params = {'area_max': '1000'}
+    where = build_where_clause(params)
+    assert 'property_area <= 1000' in where
+
+def test_build_where_clause_area_range():
+    params = {'area_min': '500', 'area_max': '1000'}
+    where = build_where_clause(params)
+    assert 'property_area BETWEEN 500 AND 1000' in where

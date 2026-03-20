@@ -21,5 +21,15 @@ def build_where_clause(params):
     if 'bathrooms' in params:
         val = float(params['bathrooms'])
         filters.append(f'number_of_bathrooms IN ("{val}")')
+
+    area_min = params.get('area_min')
+    area_max = params.get('area_max')
+    
+    if area_min and area_max:
+        filters.append(f'property_area BETWEEN {area_min} AND {area_max}')
+    elif area_min:
+        filters.append(f'property_area >= {area_min}')
+    elif area_max:
+        filters.append(f'property_area <= {area_max}')
         
     return " AND ".join(filters)
