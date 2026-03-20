@@ -26,3 +26,15 @@ python3 main.py --help
 ```bash
 pytest
 ```
+
+## Running Tests with Coverage
+```bash
+pytest --cov=.
+```
+
+## Generating Standalone Binary
+To generate a standalone executable using PyInstaller:
+```bash
+pyinstaller main.spec
+```
+The binary will be located in the `dist/` directory.
