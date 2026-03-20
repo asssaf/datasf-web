@@ -70,3 +70,22 @@ def test_build_where_clause_date_range():
     params = {'date_start': '2023-01-01', 'date_end': '2023-12-31'}
     where = build_where_clause(params)
     assert "current_sales_date BETWEEN '2023-01-01'::floating_timestamp AND '2023-12-31'::floating_timestamp" in where
+
+def test_build_where_clause_district():
+    params = {'district': '9'}
+    where = build_where_clause(params)
+    assert 'caseless_one_of(assessor_neighborhood_district, "9")' in where
+
+def test_build_where_clause_combined():
+    params = {
+        'bedrooms': '2',
+        'area_min': '500',
+        'date_start': '2023-01-01',
+        'district': '10'
+    }
+    where = build_where_clause(params)
+    assert 'number_of_bedrooms IN ("2.0")' in where
+    assert 'property_area >= 500' in where
+    assert "current_sales_date >= '2023-01-01'::floating_timestamp" in where
+    assert 'caseless_one_of(assessor_neighborhood_district, "10")' in where
+    assert where.count(' AND ') == 3

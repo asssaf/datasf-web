@@ -41,5 +41,9 @@ def build_where_clause(params):
         filters.append(f"current_sales_date >= '{date_start}'::floating_timestamp")
     elif date_end:
         filters.append(f"current_sales_date <= '{date_end}'::floating_timestamp")
+
+    if 'district' in params:
+        district = params['district']
+        filters.append(f'caseless_one_of(assessor_neighborhood_district, "{district}")')
         
     return " AND ".join(filters)
