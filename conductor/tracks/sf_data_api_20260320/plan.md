@@ -23,15 +23,15 @@
 - [x] Task: Implement SoQL `WHERE` Clause - District Filter [d1a03b3]
     - [x] Test `build_where_clause` correctly formats district (e.g., `caseless_one_of(assessor_neighborhood_district, "9")`) [d1a03b3]
     - [x] Implement logic for `--district` [d1a03b3]
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: SoQL Query Builder Logic' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: SoQL Query Builder Logic' (Protocol in workflow.md)
 
 ## Phase 3: CLI Integration
-- [ ] Task: Update CLI Command and Options in `main.py`
-    - [ ] Test that the CLI accepts the new flags (`--bedrooms`, `--area-min`, etc.)
-    - [ ] Refactor `main.py` to replace the generic `query` command options with the new specific flags
-- [ ] Task: Connect CLI to Query Builder
-    - [ ] Test that the CLI correctly invokes the query builder and passes the result to the API client
-    - [ ] Implement the glue logic in `main.py`
+- [x] Task: Update CLI Command and Options in `main.py` [d2b392f]
+    - [x] Test that the CLI accepts the new flags (`--bedrooms`, `--area-min`, etc.) [d2b392f]
+    - [x] Refactor `main.py` to replace the generic `query` command options with the new specific flags [d2b392f]
+- [x] Task: Connect CLI to Query Builder [d2b392f]
+    - [x] Test that the CLI correctly invokes the query builder and passes the result to the API client [d2b392f]
+    - [x] Implement the glue logic in `main.py` [d2b392f]
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: CLI Integration' (Protocol in workflow.md)
 
 ## Phase 4: Output & Final Polish
