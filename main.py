@@ -1,6 +1,6 @@
 import click
 from api_client import APIClient
-from formatter import format_json
+from formatter import format_json, format_table
 from query_builder import build_select_clause, build_where_clause
 
 @click.group()
@@ -16,8 +16,9 @@ def cli():
 @click.option('--date-start', help='Filter by sales date (YYYY-MM-DD) - Start.')
 @click.option('--date-end', help='Filter by sales date (YYYY-MM-DD) - End.')
 @click.option('--district', help='Filter by assessor neighborhood district number.')
+@click.option('--format', type=click.Choice(['json', 'table'], case_sensitive=False), default='json', help='Output format (default: json).')
 @click.option('--verify/--no-verify', default=True, help='Verify SSL certificates.')
-def query(bedrooms, bathrooms, area_min, area_max, date_start, date_end, district, verify):
+def query(bedrooms, bathrooms, area_min, area_max, date_start, date_end, district, format, verify):
     """Execute a specialized property query against the SF Data API."""
     params = {}
     if bedrooms: params['bedrooms'] = bedrooms
@@ -44,7 +45,12 @@ def query(bedrooms, bathrooms, area_min, area_max, date_start, date_end, distric
     try:
         # Pass the SoQL query as the '$query' parameter
         response = client.get(endpoint, params={'$query': soql_query})
-        formatted_output = format_json(response.text)
+        
+        if format.lower() == 'table':
+            formatted_output = format_table(response.text)
+        else:
+            formatted_output = format_json(response.text)
+            
         click.echo(f"API Response [{response.status_code}]:\n{formatted_output}")
     except Exception as e:
         raise click.ClickException(f"API Request failed: {str(e)}")

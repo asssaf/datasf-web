@@ -56,6 +56,21 @@ def test_cli_query_sf_data():
         assert 'SELECT' in kwargs['params']['$query']
         assert 'WHERE' in kwargs['params']['$query']
 
+def test_cli_query_table_format():
+    runner = CliRunner()
+    with patch('main.APIClient') as MockClient:
+        mock_instance = MockClient.return_value
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.text = '[{"parcel_number": "1234", "area": "500"}]'
+        mock_instance.get.return_value = mock_response
+        
+        result = runner.invoke(cli, ['query', '--format', 'table'])
+        
+        assert result.exit_code == 0
+        assert 'parcel_number | area' in result.output
+        assert '1234          | 500' in result.output
+
 def test_cli_query_api_error():
     runner = CliRunner()
     with patch('main.APIClient') as MockClient:
