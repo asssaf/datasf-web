@@ -1,5 +1,6 @@
 import click
 from api_client import APIClient
+from formatter import format_json
 
 @click.group()
 def cli():
@@ -33,7 +34,8 @@ def query(base_url, endpoint, param, auth_token, api_key, verify):
     client = APIClient(base_url, verify=verify)
     try:
         response = client.get(endpoint, params=query_params, headers=headers)
-        click.echo(f"API Response [{response.status_code}]: {response.text}")
+        formatted_output = format_json(response.text)
+        click.echo(f"API Response [{response.status_code}]:\n{formatted_output}")
     except Exception as e:
         raise click.ClickException(f"API Request failed: {str(e)}")
 
