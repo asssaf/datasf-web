@@ -14,5 +14,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: support pagination of results**
+- [~] **Track: support pagination of results**
 *Link: [./tracks/paginate_results_20260320/](./tracks/paginate_results_20260320/)*
