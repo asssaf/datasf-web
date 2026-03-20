@@ -47,17 +47,27 @@ def test_cli_query_with_auth_token():
         assert kwargs['headers']['Authorization'] == 'Bearer secret_token'
         assert 'API Response [200]:\n{\n  "auth": "ok"\n}' in result.output
 
-def test_cli_query_formats_json_output():
+def test_cli_query_api_error_404():
     runner = CliRunner()
     with patch('main.APIClient') as MockClient:
         mock_instance = MockClient.return_value
         mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.text = '{"foo": "bar"}'
+        mock_response.status_code = 404
+        mock_response.text = '{"error": "Not Found"}'
         mock_instance.get.return_value = mock_response
         
         result = runner.invoke(cli, ['query'])
         
         assert result.exit_code == 0
-        assert 'API Response [200]:' in result.output
-        assert '{\n  "foo": "bar"\n}' in result.output
+        assert 'API Response [404]:' in result.output
+
+def test_cli_query_network_error():
+    runner = CliRunner()
+    with patch('main.APIClient') as MockClient:
+        mock_instance = MockClient.return_value
+        mock_instance.get.side_effect = Exception("Connection Timeout")
+        
+        result = runner.invoke(cli, ['query'])
+        
+        assert result.exit_code != 0
+        assert 'Error: API Request failed: Connection Timeout' in result.output
