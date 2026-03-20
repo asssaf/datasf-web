@@ -55,3 +55,18 @@ def test_build_where_clause_area_range():
     params = {'area_min': '500', 'area_max': '1000'}
     where = build_where_clause(params)
     assert 'property_area BETWEEN 500 AND 1000' in where
+
+def test_build_where_clause_date_start():
+    params = {'date_start': '2023-01-01'}
+    where = build_where_clause(params)
+    assert "current_sales_date >= '2023-01-01'::floating_timestamp" in where
+
+def test_build_where_clause_date_end():
+    params = {'date_end': '2023-12-31'}
+    where = build_where_clause(params)
+    assert "current_sales_date <= '2023-12-31'::floating_timestamp" in where
+
+def test_build_where_clause_date_range():
+    params = {'date_start': '2023-01-01', 'date_end': '2023-12-31'}
+    where = build_where_clause(params)
+    assert "current_sales_date BETWEEN '2023-01-01'::floating_timestamp AND '2023-12-31'::floating_timestamp" in where

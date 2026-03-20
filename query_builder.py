@@ -31,5 +31,15 @@ def build_where_clause(params):
         filters.append(f'property_area >= {area_min}')
     elif area_max:
         filters.append(f'property_area <= {area_max}')
+
+    date_start = params.get('date_start')
+    date_end = params.get('date_end')
+    
+    if date_start and date_end:
+        filters.append(f"current_sales_date BETWEEN '{date_start}'::floating_timestamp AND '{date_end}'::floating_timestamp")
+    elif date_start:
+        filters.append(f"current_sales_date >= '{date_start}'::floating_timestamp")
+    elif date_end:
+        filters.append(f"current_sales_date <= '{date_end}'::floating_timestamp")
         
     return " AND ".join(filters)
