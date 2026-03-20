@@ -267,7 +267,7 @@ A task is complete when:
 1. All code implemented to specification
 2. Unit tests written and passing
 3. Code coverage meets project requirements
-4. Documentation complete (if applicable)
+4. Documentation complete (including `README.md` if the change is user-facing or architectural)
 5. Code passes all configured linting and static analysis checks
 6. Works beautifully on mobile (if applicable)
 7. Implementation notes added to `plan.md`
