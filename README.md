@@ -1,47 +1,36 @@
-# SF Property Data CLI
+# SF Property Data Search (Web)
 
-This project provides a CLI interface for querying San Francisco property data via the SF Data API (Socrata).
+This project is a static single-page application (SPA) built in Elm for querying San Francisco property data via the SF Data API (Socrata).
 
-## Project Structure
-- `main.py`: Entry point for the CLI application.
-- `api_client.py`: Module for handling API requests.
-- `formatter.py`: Module for formatting API responses (JSON and Table).
-- `query_builder.py`: Module for constructing SoQL queries.
-- `tests/`: Directory containing project tests.
-- `conductor/`: Project management and workflow documentation.
+## Features
+- Search properties by roll year, bedrooms, bathrooms, parcel number, and more.
+- Filter by neighborhood districts, codes, and property class codes.
+- Compare properties against a "target parcel" to see relative distances and area/value ratios.
+- Toggle between Table and JSON views for results.
+- Responsive UI built with Bootstrap.
 
 ## Getting Started
-To install dependencies and set up the environment, run:
+
+### Prerequisites
+- [Elm 0.19.1](https://guide.elm-lang.org/install/elm.html)
+- [Node.js & npm](https://nodejs.org/) (for running tests and local server)
+
+### Installation
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+npm install -g elm elm-test
 ```
 
-## Running the Application
+### Local Development
+To compile the Elm code to JavaScript:
 ```bash
-python3 main.py query --help
+elm make src/Main.elm --output=main.js
+```
+Then, open `index.html` in your browser.
+
+### Running Tests
+```bash
+elm-test
 ```
 
-### Example Usage
-```bash
-# Query properties with 2 bedrooms in district 9, formatted as a table
-python3 main.py query --bedrooms 2 --district 9 --format table
-```
-
-## Running Tests
-```bash
-venv/bin/pytest
-```
-
-## Running Tests with Coverage
-```bash
-venv/bin/pytest --cov=.
-```
-
-## Generating Standalone Binary
-To generate a standalone executable using PyInstaller:
-```bash
-pyinstaller main.spec
-```
-The binary will be located in the `dist/` directory.
+## Deployment
+The app is automatically built and deployed to GitHub Pages via GitHub Actions on every push to the `master` branch.
