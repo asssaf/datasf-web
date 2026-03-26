@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -14,26 +19,32 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-    - name: Set up Python
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+    - name: Setup Node
+      uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c483a26c91 # v4.2.0
       with:
-        python-version: '3.11'
+        node-version: 20
 
-    - name: Install dependencies
+    - name: Install Elm
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        npm install -g elm elm-test
 
-    - name: Run tests with coverage
+    - name: Run Tests
       run: |
-        pytest --cov=. --cov-fail-under=80
+        elm-test
 
-    - name: Build binary with PyInstaller
+    - name: Build Elm App
       run: |
-        pyinstaller main.spec
+        elm make src/Main.elm --optimize --output=main.js
 
-    - name: Upload binary artifact
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+    - name: Setup Pages
+      uses: actions/configure-pages@11b93f6ba9cc2b18420e6a3c631024345517f8a3 # v5.0.0
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dee4629d9575 # v3.0.1
       with:
-        name: sf-property-data-cli
-        path: dist/datasf-query
+        path: '.'
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/master'
+      id: deployment
+      uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
