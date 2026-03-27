@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Encode as Encode
-import ApiClient exposing (Property, TargetLookupResult, fetchProperties, fetchTargetParcel)
+import ApiClient exposing (Property, TargetLookupResult, fetchProperties, fetchTargetParcel, cancelSearch)
 import QueryBuilder exposing (QueryParams, defaultQueryParams)
 
 -- MAIN
@@ -105,15 +105,23 @@ update msg model =
             ( { model | viewMode = mode }, Cmd.none )
 
         SubmitSearch ->
-            if not (String.isEmpty model.targetParcelNumber) then
-                if String.isEmpty model.targetRollYear then
-                    ( { model | status = Failure "When target parcel is provided, target roll year must also be specified." }, Cmd.none )
-                else
-                    ( { model | status = LoadingTarget }, fetchTargetParcel model.targetParcelNumber model.targetRollYear GotTargetLookup )
-            else
-                ( { model | status = LoadingResults, targetPoint = Nothing, targetArea = Nothing, targetTotalValue = Nothing }
-                , fetchProperties Nothing Nothing Nothing model.fields model.queryParams model.limit model.offset GotResults
-                )
+            case model.status of
+                LoadingTarget ->
+                    ( { model | status = Idle }, cancelSearch )
+
+                LoadingResults ->
+                    ( { model | status = Idle }, cancelSearch )
+
+                _ ->
+                    if not (String.isEmpty model.targetParcelNumber) then
+                        if String.isEmpty model.targetRollYear then
+                            ( { model | status = Failure "When target parcel is provided, target roll year must also be specified." }, Cmd.none )
+                        else
+                            ( { model | status = LoadingTarget }, fetchTargetParcel model.targetParcelNumber model.targetRollYear GotTargetLookup )
+                    else
+                        ( { model | status = LoadingResults, targetPoint = Nothing, targetArea = Nothing, targetTotalValue = Nothing }
+                        , fetchProperties Nothing Nothing Nothing model.fields model.queryParams model.limit model.offset GotResults
+                        )
 
         GotTargetLookup result ->
             case result of
@@ -251,7 +259,15 @@ viewForm model =
                         , input [ id "offset", class "form-control", type_ "number", value (String.fromInt model.offset), onInput UpdateOffset ] []
                         ]
                     ]
-                , button [ class "btn btn-primary", type_ "submit" ] [ text "Search" ]
+                , case model.status of
+                    LoadingTarget ->
+                        button [ class "btn btn-danger", type_ "submit" ] [ text "Cancel" ]
+
+                    LoadingResults ->
+                        button [ class "btn btn-danger", type_ "submit" ] [ text "Cancel" ]
+
+                    _ ->
+                        button [ class "btn btn-primary", type_ "submit" ] [ text "Search" ]
                 ]
             ]
         ]

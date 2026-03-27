@@ -1,4 +1,4 @@
-module ApiClient exposing (..)
+module ApiClient exposing (Property, TargetLookupResult, fetchProperties, fetchTargetParcel, cancelSearch)
 
 import Http
 import Json.Decode as Decode exposing (Decoder, field, list, string, float, maybe, oneOf, succeed)
@@ -59,15 +59,28 @@ decodeProperty =
         |> andMap (maybe (field "total_assessed_value_ratio" (oneOf [float, Decode.map (String.toFloat >> Maybe.withDefault 0.0) string])))
         |> andMap Decode.value
 
+searchTracker : String
+searchTracker =
+    "search"
+
+cancelSearch : Cmd msg
+cancelSearch =
+    Http.cancel searchTracker
+
 fetchProperties : Maybe (Float, Float) -> Maybe Float -> Maybe Float -> List String -> QueryParams -> Int -> Int -> (Result Http.Error (List Property) -> msg) -> Cmd msg
 fetchProperties targetPoint targetArea targetTotalValue requestedFields params limit offset toMsg =
     let
         soql = buildFullSoQL targetPoint targetArea targetTotalValue requestedFields params limit offset
         url = Url.Builder.crossOrigin "https://data.sfgov.org" [ "resource", "wv5m-vpq2.json" ] [ Url.Builder.string "$query" soql ]
     in
-    Http.get
-        { url = url
+    Http.request
+        { method = "GET"
+        , headers = []
+        , url = url
+        , body = Http.emptyBody
         , expect = Http.expectJson toMsg (list decodeProperty)
+        , timeout = Nothing
+        , tracker = Just searchTracker
         }
 
 type alias TargetLookupResult =
@@ -94,7 +107,12 @@ fetchTargetParcel parcelNumber rollYear toMsg =
         select = "the_geom, property_area, assessed_improvement_value, assessed_land_value, assessed_fixtures_value"
         url = Url.Builder.crossOrigin "https://data.sfgov.org" [ "resource", "wv5m-vpq2.json" ] [ Url.Builder.string "$query" ("SELECT " ++ select ++ " WHERE " ++ where_ ++ " LIMIT 1") ]
     in
-    Http.get
-        { url = url
+    Http.request
+        { method = "GET"
+        , headers = []
+        , url = url
+        , body = Http.emptyBody
         , expect = Http.expectJson toMsg (list decodeTargetLookup)
+        , timeout = Nothing
+        , tracker = Just searchTracker
         }
