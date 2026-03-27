@@ -34,3 +34,5 @@ elm-test
 
 ## Deployment
 The app is automatically built and deployed to GitHub Pages via GitHub Actions on every push to the `master` branch.
+
+https://asssaf.github.io/datasf-web/
