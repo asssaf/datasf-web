@@ -322,11 +322,26 @@ viewTable model results =
     div [ class "table-responsive" ]
         [ table [ class "table table-striped table-hover table-sm" ]
             [ thead []
-                [ tr [] (List.map (\h -> th [] [ text h ]) headers) ]
+                [ tr [] (List.map (\h -> th [ style "max-width" "100px", style "white-space" "normal" ] [ text (formatHeader h) ]) headers) ]
             , tbody []
                 (List.map (viewRow headers) results)
             ]
         ]
+
+formatHeader : String -> String
+formatHeader field =
+    if field == "the_geom" then
+        "Coordinates"
+
+    else
+        field
+            |> String.split "_"
+            |> List.map capitalize
+            |> String.join " "
+
+capitalize : String -> String
+capitalize word =
+    (String.left 1 word |> String.toUpper) ++ String.dropLeft 1 word
 
 viewRow : List String -> Property -> Html Msg
 viewRow headers prop =
