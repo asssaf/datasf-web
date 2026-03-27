@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Encode as Encode
-import ApiClient exposing (Property, TargetLookupResult, fetchProperties, fetchTargetParcel, cancelSearch)
+import ApiClient exposing (Property, TargetLookupResult, fetchProperties, fetchTargetParcel)
 import QueryBuilder exposing (QueryParams, defaultQueryParams)
 
 -- MAIN
@@ -46,6 +46,7 @@ type alias Model =
     , targetTotalValue : Maybe Float
     , fields : List String
     , lastError : Maybe String
+    , currentSearchId : Int
     }
 
 init : () -> ( Model, Cmd Msg )
@@ -62,6 +63,7 @@ init _ =
       , targetTotalValue = Nothing
       , fields = []
       , lastError = Nothing
+      , currentSearchId = 0
       }
     , Cmd.none
     )
@@ -77,8 +79,8 @@ type Msg
     | UpdateOffset String
     | SetViewMode ViewMode
     | SubmitSearch
-    | GotTargetLookup (Result Http.Error (List TargetLookupResult))
-    | GotResults (Result Http.Error (List Property))
+    | GotTargetLookup Int (Result Http.Error (List TargetLookupResult))
+    | GotResults Int (Result Http.Error (List Property))
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -105,25 +107,33 @@ update msg model =
             ( { model | viewMode = mode }, Cmd.none )
 
         SubmitSearch ->
+            let
+                newSearchId = model.currentSearchId + 1
+            in
             case model.status of
                 LoadingTarget ->
-                    ( { model | status = Idle }, cancelSearch )
+                    ( { model | status = Idle, currentSearchId = newSearchId }, Cmd.none )
 
                 LoadingResults ->
-                    ( { model | status = Idle }, cancelSearch )
+                    ( { model | status = Idle, currentSearchId = newSearchId }, Cmd.none )
 
                 _ ->
                     if not (String.isEmpty model.targetParcelNumber) then
                         if String.isEmpty model.targetRollYear then
                             ( { model | status = Failure "When target parcel is provided, target roll year must also be specified." }, Cmd.none )
                         else
-                            ( { model | status = LoadingTarget }, fetchTargetParcel model.targetParcelNumber model.targetRollYear GotTargetLookup )
+                            ( { model | status = LoadingTarget, currentSearchId = newSearchId }
+                            , fetchTargetParcel model.targetParcelNumber model.targetRollYear (GotTargetLookup newSearchId)
+                            )
                     else
-                        ( { model | status = LoadingResults, targetPoint = Nothing, targetArea = Nothing, targetTotalValue = Nothing }
-                        , fetchProperties Nothing Nothing Nothing model.fields model.queryParams model.limit model.offset GotResults
+                        ( { model | status = LoadingResults, targetPoint = Nothing, targetArea = Nothing, targetTotalValue = Nothing, currentSearchId = newSearchId }
+                        , fetchProperties Nothing Nothing Nothing model.fields model.queryParams model.limit model.offset (GotResults newSearchId)
                         )
 
-        GotTargetLookup result ->
+        GotTargetLookup searchId result ->
+            if searchId /= model.currentSearchId then
+                ( model, Cmd.none )
+            else
             case result of
                 Ok [ target ] ->
                     let
@@ -137,14 +147,17 @@ update msg model =
                         finalTotal = if total == 0 then Nothing else Just total
                     in
                     ( { model | status = LoadingResults, targetPoint = point, targetArea = area, targetTotalValue = finalTotal }
-                    , fetchProperties point area finalTotal model.fields model.queryParams model.limit model.offset GotResults
+                    , fetchProperties point area finalTotal model.fields model.queryParams model.limit model.offset (GotResults model.currentSearchId)
                     )
                 Ok _ ->
                     ( { model | status = Failure "Target parcel not found." }, Cmd.none )
                 Err err ->
                     ( { model | status = Failure ("Failed to lookup target parcel: " ++ httpErrorToString err) }, Cmd.none )
 
-        GotResults result ->
+        GotResults searchId result ->
+            if searchId /= model.currentSearchId then
+                ( model, Cmd.none )
+            else
             case result of
                 Ok properties ->
                     ( { model | status = Success properties }, Cmd.none )
