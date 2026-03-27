@@ -1,4 +1,4 @@
-module ApiClient exposing (..)
+module ApiClient exposing (Property, TargetLookupResult, fetchProperties, fetchTargetParcel)
 
 import Http
 import Json.Decode as Decode exposing (Decoder, field, list, string, float, maybe, oneOf, succeed)
